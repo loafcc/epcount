@@ -4,7 +4,7 @@ const { Client, Collection, Events, GatewayIntentBits, MessageFlags, ActionRowBu
 const { token } = require('./config.json');
 const { EmbedBuilder } = require('discord.js');
 const db = require('./db.json');
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers] });
 
 client.once(Events.ClientReady, (readyClient) => {
     console.log(`Ready! Logged in as ${readyClient.user.tag}`);
@@ -13,9 +13,15 @@ client.once(Events.ClientReady, (readyClient) => {
 client.on(Events.MessageCreate, async (message) => {
     if (message.author.bot) return;
     if (message.channel.id !== db.channelid) return;
-    if (message.content === (parseInt(db.currentnum) + 1).toString()) {
+    if (message.content.includes((parseInt(db.currentnum) + 1).toString())) {
         if (message.author.id === db.lastuser) {
             message.delete();
+            const member = await message.guild.members.fetch(message.author.id);
+            member.roles.add(db.role);
+            setTimeout(async () => {
+                const updatedMember = await message.guild.members.fetch(message.author.id);
+                updatedMember.roles.remove(db.role);
+            }, db.roleTimeout);
             return;
         }
         db.currentnum = (parseInt(db.currentnum) + 1).toString();
