@@ -1,0 +1,15 @@
+{
+  "name": "epcounting",
+  "version": "1.0.0",
+  "description": "used perm level 76864 with bot all intents besides the presence one",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "discord.js": "^14.26.4"
+  }
+}
